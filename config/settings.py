@@ -23,6 +23,11 @@ load_dotenv()  # take environment variables from .env.
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Login settings
+LOGIN_URL = 'auth-login-basic'
+LOGIN_REDIRECT_URL = 'dashboards:index'
+LOGOUT_REDIRECT_URL = 'auth-login-basic'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 

@@ -1,6 +1,10 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
 from web_project import TemplateLayout
 from .models import SalesData, Transaction, WeeklyOverview, CountryStats
+from .forms import SalesDataForm, TransactionForm, WeeklyOverviewForm, CountryStatsForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
@@ -48,3 +52,111 @@ class DashboardsView(TemplateView):
         )
 
         return context
+
+# Sales Data CRUD Views
+class SalesDataListView(LoginRequiredMixin, ListView):
+    model = SalesData
+    template_name = 'dashboard_crud/sales_list.html'
+    context_object_name = 'sales_data'
+    ordering = ['-date']
+
+class SalesDataCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = SalesData
+    form_class = SalesDataForm
+    template_name = 'dashboard_crud/sales_form.html'
+    success_url = reverse_lazy('dashboards:sales_list')
+    success_message = "Sales data was created successfully"
+
+class SalesDataUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = SalesData
+    form_class = SalesDataForm
+    template_name = 'dashboard_crud/sales_form.html'
+    success_url = reverse_lazy('dashboards:sales_list')
+    success_message = "Sales data was updated successfully"
+
+class SalesDataDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = SalesData
+    template_name = 'dashboard_crud/sales_confirm_delete.html'
+    success_url = reverse_lazy('dashboards:sales_list')
+    success_message = "Sales data was deleted successfully"
+
+# Transaction CRUD Views
+class TransactionListView(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = 'dashboard_crud/transaction_list.html'
+    context_object_name = 'transactions'
+    ordering = ['-date']
+
+class TransactionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = 'dashboard_crud/transaction_form.html'
+    success_url = reverse_lazy('dashboards:transaction_list')
+    success_message = "Transaction was created successfully"
+
+class TransactionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = 'dashboard_crud/transaction_form.html'
+    success_url = reverse_lazy('dashboards:transaction_list')
+    success_message = "Transaction was updated successfully"
+
+class TransactionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Transaction
+    template_name = 'dashboard_crud/transaction_confirm_delete.html'
+    success_url = reverse_lazy('dashboards:transaction_list')
+    success_message = "Transaction was deleted successfully"
+
+# Weekly Overview CRUD Views
+class WeeklyOverviewListView(LoginRequiredMixin, ListView):
+    model = WeeklyOverview
+    template_name = 'dashboard_crud/weekly_list.html'
+    context_object_name = 'weekly_data'
+    ordering = ['-week_start']
+
+class WeeklyOverviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = WeeklyOverview
+    form_class = WeeklyOverviewForm
+    template_name = 'dashboard_crud/weekly_form.html'
+    success_url = reverse_lazy('dashboards:weekly_list')
+    success_message = "Weekly overview was created successfully"
+
+class WeeklyOverviewUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = WeeklyOverview
+    form_class = WeeklyOverviewForm
+    template_name = 'dashboard_crud/weekly_form.html'
+    success_url = reverse_lazy('dashboards:weekly_list')
+    success_message = "Weekly overview was updated successfully"
+
+class WeeklyOverviewDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = WeeklyOverview
+    template_name = 'dashboard_crud/weekly_confirm_delete.html'
+    success_url = reverse_lazy('dashboards:weekly_list')
+    success_message = "Weekly overview was deleted successfully"
+
+# Country Stats CRUD Views
+class CountryStatsListView(LoginRequiredMixin, ListView):
+    model = CountryStats
+    template_name = 'dashboard_crud/country_list.html'
+    context_object_name = 'country_stats'
+    ordering = ['-sales']
+
+class CountryStatsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = CountryStats
+    form_class = CountryStatsForm
+    template_name = 'dashboard_crud/country_form.html'
+    success_url = reverse_lazy('dashboards:country_list')
+    success_message = "Country stats were created successfully"
+
+class CountryStatsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = CountryStats
+    form_class = CountryStatsForm
+    template_name = 'dashboard_crud/country_form.html'
+    success_url = reverse_lazy('dashboards:country_list')
+    success_message = "Country stats were updated successfully"
+
+class CountryStatsDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = CountryStats
+    template_name = 'dashboard_crud/country_confirm_delete.html'
+    success_url = reverse_lazy('dashboards:country_list')
+    success_message = "Country stats were deleted successfully"

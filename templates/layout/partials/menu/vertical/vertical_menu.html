@@ -2,7 +2,7 @@
   <!-- ! Hide app brand if navbar-full -->
   {% if not navbar_full %}
   <div class="app-brand demo">
-    <a href="{% url 'index' %}" class="app-brand-link">
+    <a href="{% url 'dashboards:index' %}" class="app-brand-link">
       <span class="app-brand-logo demo me-1">
         {% include 'partials/logo.html' %}
       </span>
@@ -24,12 +24,42 @@
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ri-home-smile-line"></i>
         <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
-        <span class="badge bg-danger rounded-pill ms-auto">4</span>
+        <span class="badge bg-danger rounded-pill ms-auto">1</span>
       </a>
       <ul class="menu-sub">
         <li class="menu-item {% if 'index' == request.resolver_match.url_name %}active{% endif %}">
-          <a href="{% url 'index' %}" class="menu-link">
+          <a href="{% url 'dashboards:index' %}" class="menu-link">
             <div class="text-truncate" data-i18n="Analytics">Analytics</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Data Management -->
+    <li class="menu-item {% if 'sales_list' in request.resolver_match.url_name or 'transaction_list' in request.resolver_match.url_name or 'weekly_list' in request.resolver_match.url_name or 'country_list' in request.resolver_match.url_name %}active open{% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ri-database-2-line"></i>
+        <div class="text-truncate" data-i18n="Data Management">Data Management</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if 'sales_list' in request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'dashboards:sales_list' %}" class="menu-link">
+            <div class="text-truncate" data-i18n="Sales Data">Sales Data</div>
+          </a>
+        </li>
+        <li class="menu-item {% if 'transaction_list' in request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'dashboards:transaction_list' %}" class="menu-link">
+            <div class="text-truncate" data-i18n="Transactions">Transactions</div>
+          </a>
+        </li>
+        <li class="menu-item {% if 'weekly_list' in request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'dashboards:weekly_list' %}" class="menu-link">
+            <div class="text-truncate" data-i18n="Weekly Overview">Weekly Overview</div>
+          </a>
+        </li>
+        <li class="menu-item {% if 'country_list' in request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'dashboards:country_list' %}" class="menu-link">
+            <div class="text-truncate" data-i18n="Country Stats">Country Stats</div>
           </a>
         </li>
       </ul>
