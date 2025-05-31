@@ -147,6 +147,15 @@ class WeeklyOverviewListView(LoginRequiredMixin, ListView):
     template_name = 'dashboard_crud/weekly_list.html'
     context_object_name = 'weekly_data'
     ordering = ['-week_start']
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Weekly Overview',
+            'create_url': reverse_lazy('dashboards:weekly_create')
+        })
+        return context
 
 class WeeklyOverviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = WeeklyOverview
@@ -155,12 +164,28 @@ class WeeklyOverviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateVi
     success_url = reverse_lazy('dashboards:weekly_list')
     success_message = "Weekly overview was created successfully"
 
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Add New Weekly Overview',
+            'back_url': reverse_lazy('dashboards:weekly_list')
+        })
+        return context
+
 class WeeklyOverviewUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = WeeklyOverview
     form_class = WeeklyOverviewForm
     template_name = 'dashboard_crud/weekly_form.html'
     success_url = reverse_lazy('dashboards:weekly_list')
     success_message = "Weekly overview was updated successfully"
+
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Edit Weekly Overview',
+            'back_url': reverse_lazy('dashboards:weekly_list')
+        })
+        return context
 
 class WeeklyOverviewDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = WeeklyOverview

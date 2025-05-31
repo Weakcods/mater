@@ -1,0 +1,76 @@
+{% extends 'dashboard_crud/base_list.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}">
+{% endblock vendor_css %}
+
+{% block table_headers %}
+<th>Week Start</th>
+<th>Total Sales</th>
+<th>Total Orders</th>
+<th>Average Order Value</th>
+<th>Growth Rate</th>
+{% endblock %}
+
+{% block table_body %}
+{% for week in weekly_data %}
+<tr>
+  <td>{{ week.week_start|date:"M d, Y" }}</td>
+  <td>${{ week.total_sales }}</td>
+  <td>{{ week.total_orders }}</td>
+  <td>${{ week.total_sales|floatformat:2 }}</td>
+  <td>    {% if week.growth_rate > 0 %}
+    <span class="badge bg-label-success">
+      <i class="ri-arrow-up-line me-1"></i>+{{ week.growth_rate|floatformat:1 }}%
+    </span>
+    {% elif week.growth_rate < 0 %}
+    <span class="badge bg-label-danger">
+      <i class="ri-arrow-down-line me-1"></i>{{ week.growth_rate|floatformat:1 }}%
+    </span>
+    {% else %}
+    <span class="badge bg-label-secondary">0%</span>
+    {% endif %}
+  </td>
+  <td>
+    <div class="dropdown">
+      <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+        <i class="ri-more-2-fill"></i>
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="{% url 'dashboards:weekly_update' week.id %}">
+          <i class="ri-pencil-line me-1"></i> Edit
+        </a>
+        <a class="dropdown-item text-danger" href="{% url 'dashboards:weekly_delete' week.id %}">
+          <i class="ri-delete-bin-line me-1"></i> Delete
+        </a>
+      </div>
+    </div>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="6" class="text-center">No weekly overview data available</td>
+</tr>
+{% endfor %}
+{% endblock %}
+
+{% block page_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.js' %}"></script>
+<script>
+  $(document).ready(function() {
+    $('table').DataTable({
+      "pageLength": 10,
+      "ordering": true,
+      "order": [[0, 'desc']],
+      "info": true,
+      "lengthChange": true,
+      "searching": true,
+    });
+  });
+</script>
+{% endblock %}
