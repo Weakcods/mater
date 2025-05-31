@@ -1,0 +1,181 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Analytics Dashboard{% endblock title %}
+
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/apex-charts/apex-charts.css' %}" />
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/apex-charts/apexcharts.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block page_js %}
+{{ block.super }}
+<script src="{% static 'js/dashboards-analytics.js' %}"></script>
+{% endblock page_js %}
+
+{% block content %}
+<div class="row gy-4">
+  <!-- Overview Stats -->
+  <div class="col-lg-8 order-0">
+    <div class="row">
+      <!-- Sales Overview -->
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h5 class="card-title mb-0">Sales Overview</h5>
+                <small class="text-muted">Updated just now</small>
+              </div>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="salesOverviewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  This Month
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="salesOverviewDropdown">
+                  <li><a class="dropdown-item" href="#">This Week</a></li>
+                  <li><a class="dropdown-item" href="#">This Month</a></li>
+                  <li><a class="dropdown-item" href="#">This Year</a></li>
+                </ul>
+              </div>
+            </div>
+            {% if latest_sales %}
+            <h3 class="text-primary">${{ latest_sales.amount }}</h3>
+            <p class="mb-2">
+              {% if latest_sales.target %}
+              {{ latest_sales.amount|div:latest_sales.target|mul:100|floatformat:1 }}% of target
+              <span class="badge bg-label-success ms-2">
+                <i class="ri-arrow-up-line me-1"></i> On Track
+              </span>
+              {% endif %}
+            </p>
+            {% endif %}
+            <div id="salesChart" style="min-height: 200px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Recent Transactions</h5>
+          </div>
+          <div class="card-body px-0">
+            <div class="table-responsive">
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for transaction in recent_transactions %}
+                  <tr>
+                    <td>
+                      <span class="badge bg-label-{% if transaction.type == 'income' %}success{% elif transaction.type == 'expense' %}danger{% else %}info{% endif %} me-1">
+                        {{ transaction.type|title }}
+                      </span>
+                    </td>
+                    <td>${{ transaction.amount }}</td>
+                    <td>{{ transaction.date|date:"M d, Y" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Performance -->
+  <div class="col-lg-4 col-md-12 order-1">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0">Weekly Performance</h5>
+        <div class="dropdown">
+          <button class="btn p-0" type="button" id="weeklyPerformance" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-more-2-fill"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyPerformance">
+            <a class="dropdown-item" href="javascript:void(0);">Download Report</a>
+            <a class="dropdown-item" href="javascript:void(0);">Share</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if weekly_overview %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="mb-0">${{ weekly_overview.total_sales }}</h4>
+            <small class="text-muted">Total Sales</small>
+          </div>
+          <div>
+            <h4 class="mb-0">{{ weekly_overview.total_orders }}</h4>
+            <small class="text-muted">Total Orders</small>
+          </div>
+        </div>
+        <div class="growth-rate d-flex align-items-center mb-4">
+          <h1 class="mb-0">{{ weekly_overview.growth_rate }}%</h1>
+          <span class="badge {% if weekly_overview.growth_rate > 0 %}bg-label-success{% else %}bg-label-danger{% endif %} ms-2">
+            <i class="ri-arrow-{% if weekly_overview.growth_rate > 0 %}up{% else %}down{% endif %}-line me-1"></i>
+            From last week
+          </span>
+        </div>
+        {% endif %}
+        <div id="weeklyPerformanceChart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Countries -->
+  <div class="col-md-6 col-lg-4 order-2 mb-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0">Top Countries</h5>
+        <small class="text-muted">Last 30 days</small>
+      </div>
+      <div class="card-body">
+        {% for country in top_countries %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex align-items-center">
+            <div>
+              <h6 class="mb-0">{{ country.country }}</h6>
+              <small class="text-muted">{{ country.growth_rate }}% growth</small>
+            </div>
+          </div>
+          <h6 class="mb-0">${{ country.sales }}</h6>
+        </div>
+        {% endfor %}
+        <div id="countryStatsChart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Growth -->
+  <div class="col-md-6 col-lg-4 order-2 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="card-title mb-0">Monthly Growth</h5>
+            <small class="text-muted">Last 30 days performance</small>
+          </div>
+        </div>
+        <h3 class="text-success">${{ monthly_growth }}</h3>
+        <div id="monthlyGrowthChart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
