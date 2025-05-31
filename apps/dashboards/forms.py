@@ -6,9 +6,35 @@ class SalesDataForm(forms.ModelForm):
         model = SalesData
         fields = ['date', 'amount', 'target']
         widgets = {
-            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
-            'target': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'YYYY-MM-DD',
+                }
+            ),
+            'amount': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter amount',
+                    'step': '0.01'
+                }
+            ),
+            'target': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter target',
+                    'step': '0.01'
+                }
+            ),
+        }
+        labels = {
+            'date': 'Sales Date',
+            'amount': 'Sales Amount',
+            'target': 'Target Amount'
+        }
+        help_texts = {
+            'amount': 'Enter the actual sales amount for this date',
+            'target': 'Enter the target sales amount for this date'
         }
 
 class TransactionForm(forms.ModelForm):

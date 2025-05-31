@@ -1,0 +1,86 @@
+{% extends 'dashboard_crud/base_form.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/flatpickr/flatpickr.css' %}" />
+{% endblock %}
+
+{% block form_fields %}
+<div class="row mb-3">
+  <label class="col-sm-3 col-form-label" for="{{ form.date.id_for_label }}">
+    {{ form.date.label }}
+    {% if form.date.field.required %}<span class="text-danger">*</span>{% endif %}
+  </label>
+  <div class="col-sm-9">
+    <div class="form-floating form-floating-outline">
+      {{ form.date }}
+      {% if form.date.errors %}
+        {% for error in form.date.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <label class="col-sm-3 col-form-label" for="{{ form.amount.id_for_label }}">
+    {{ form.amount.label }}
+    {% if form.amount.field.required %}<span class="text-danger">*</span>{% endif %}
+  </label>
+  <div class="col-sm-9">
+    <div class="form-floating form-floating-outline">
+      <div class="input-group">
+        <span class="input-group-text">$</span>
+        {{ form.amount }}
+      </div>
+      {% if form.amount.errors %}
+        {% for error in form.amount.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <label class="col-sm-3 col-form-label" for="{{ form.target.id_for_label }}">
+    {{ form.target.label }}
+    {% if form.target.field.required %}<span class="text-danger">*</span>{% endif %}
+  </label>
+  <div class="col-sm-9">
+    <div class="form-floating form-floating-outline">
+      <div class="input-group">
+        <span class="input-group-text">$</span>
+        {{ form.target }}
+      </div>
+      {% if form.target.errors %}
+        {% for error in form.target.errors %}
+          <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/flatpickr/flatpickr.js' %}"></script>
+{% endblock %}
+
+{% block page_js %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize date picker
+  flatpickr("#{{ form.date.id_for_label }}", {
+    dateFormat: "Y-m-d",
+    defaultDate: "today"
+  });
+});
+</script>
+{% endblock %}

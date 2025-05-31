@@ -1,12 +1,12 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import AuthView
+from .views import AuthView, CustomLoginView
 
 
 urlpatterns = [
     path(
         "auth/login/",
-        auth_views.LoginView.as_view(template_name="auth_login_basic.html", redirect_authenticated_user=True),
+        CustomLoginView.as_view(redirect_authenticated_user=True),
         name="auth-login-basic",
     ),
     path(

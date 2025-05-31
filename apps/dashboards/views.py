@@ -59,6 +59,15 @@ class SalesDataListView(LoginRequiredMixin, ListView):
     template_name = 'dashboard_crud/sales_list.html'
     context_object_name = 'sales_data'
     ordering = ['-date']
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Sales Data',
+            'create_url': reverse_lazy('dashboards:sales_create')
+        })
+        return context
 
 class SalesDataCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = SalesData
@@ -67,12 +76,28 @@ class SalesDataCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('dashboards:sales_list')
     success_message = "Sales data was created successfully"
 
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Add New Sales Data',
+            'back_url': reverse_lazy('dashboards:sales_list')
+        })
+        return context
+
 class SalesDataUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = SalesData
     form_class = SalesDataForm
     template_name = 'dashboard_crud/sales_form.html'
     success_url = reverse_lazy('dashboards:sales_list')
     success_message = "Sales data was updated successfully"
+
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        context.update({
+            'page_title': 'Edit Sales Data',
+            'back_url': reverse_lazy('dashboards:sales_list')
+        })
+        return context
 
 class SalesDataDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = SalesData

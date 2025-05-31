@@ -9,6 +9,15 @@ class SalesData(models.Model):
     
     class Meta:
         ordering = ['-date']
+        
+    def get_percentage(self):
+        """Calculate percentage of target achieved"""
+        if self.target and float(self.target) > 0:
+            return (float(self.amount) / float(self.target)) * 100
+        return 0
+        
+    def __str__(self):
+        return f"{self.date} - ${self.amount}"
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = (

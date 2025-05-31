@@ -1,6 +1,15 @@
 from django.views.generic import TemplateView
+from django.contrib.auth.views import LoginView
 from web_project import TemplateLayout
 from web_project.template_helpers.theme import TemplateHelper
+
+
+class CustomLoginView(LoginView):
+    template_name = 'auth_login_basic.html'
+
+    def get_context_data(self, **kwargs):
+        context = TemplateLayout.init(self, super().get_context_data(**kwargs))
+        return context
 
 
 """
@@ -19,7 +28,7 @@ class AuthView(TemplateView):
         # Update the context
         context.update(
             {
-                "layout_path": TemplateHelper.set_layout("layout_blank.html", context),
+                'layout_path': TemplateHelper.set_layout("layouts/blank.html"),
             }
         )
 
